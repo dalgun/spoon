@@ -26,9 +26,15 @@ output "igw_id" {
 }
 
 # subnets
-output "private_subnets_ids" {
-  description = "Private Subnet ID 리스트"
-  value       = ["${aws_subnet.private.*.id}"]
+output "private_web_subnets_ids" {
+  description = "Private Web Subnet ID 리스트"
+  value       = ["${aws_subnet.private_web.*.id}"]
+}
+
+# subnets
+output "private_was_subnets_ids" {
+  description = "Private Web Subnet ID 리스트"
+  value       = ["${aws_subnet.private_was.*.id}"]
 }
 
 output "public_subnets_ids" {

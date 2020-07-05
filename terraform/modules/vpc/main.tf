@@ -37,12 +37,7 @@ resource "aws_default_network_acl" "dev_default" {
     to_port    = 0
   }
 
-#  subnet_ids = [
-#    "${aws_subnet.public.*.id}",
-#    "${aws_subnet.private.*.id}",
-#    "${aws_subnet.database.*.id}"
-#  ]
-  subnet_ids = concat("${aws_subnet.public.*.id}", "${aws_subnet.private.*.id}","${aws_subnet.database.*.id}")
+  subnet_ids = concat("${aws_subnet.public.*.id}", "${aws_subnet.private_was.*.id}", "${aws_subnet.private_web.*.id}","${aws_subnet.database.*.id}")
   tags = "${merge(var.tags, map("Name", format("%s-default", var.name)))}"
 }
 
@@ -78,16 +73,28 @@ resource "aws_subnet" "public" {
   tags = "${merge(var.tags, map("Name", format("%s-public-%s", var.name, var.azs[count.index])))}"
 }
 
-# private subnet
-resource "aws_subnet" "private" {
-  count = "${length(var.private_subnets)}"
+# private web subnet
+resource "aws_subnet" "private_web" {
+  count = "${length(var.private_web_subnets)}"
 
   vpc_id            = "${aws_vpc.this.id}"
-  cidr_block        = "${var.private_subnets[count.index]}"
+  cidr_block        = "${var.private_web_subnets[count.index]}"
   availability_zone = "${var.azs[count.index]}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-private-%s", var.name, var.azs[count.index])))}"
+  tags = "${merge(var.tags, map("Name", format("%s-private-web-%s", var.name, var.azs[count.index])))}"
 }
+
+# private web subnet
+resource "aws_subnet" "private_was" {
+  count = "${length(var.private_was_subnets)}"
+
+  vpc_id            = "${aws_vpc.this.id}"
+  cidr_block        = "${var.private_was_subnets[count.index]}"
+  availability_zone = "${var.azs[count.index]}"
+
+  tags = "${merge(var.tags, map("Name", format("%s-private-was-%s", var.name, var.azs[count.index])))}"
+}
+
 
 # private database subnet
 resource "aws_subnet" "database" {
@@ -159,10 +166,17 @@ resource "aws_route_table_association" "public" {
   route_table_id = "${aws_route_table.public.id}"
 }
 
-resource "aws_route_table_association" "private" {
-  count = "${length(var.private_subnets)}"
+resource "aws_route_table_association" "private_web" {
+  count = "${length(var.private_web_subnets)}"
 
-  subnet_id      = "${aws_subnet.private.*.id[count.index]}"
+  subnet_id      = "${aws_subnet.private_web.*.id[count.index]}"
+  route_table_id = "${aws_route_table.private.*.id[count.index]}"
+}
+
+resource "aws_route_table_association" "private_was" {
+  count = "${length(var.private_was_subnets)}"
+
+  subnet_id      = "${aws_subnet.private_was.*.id[count.index]}"
   route_table_id = "${aws_route_table.private.*.id[count.index]}"
 }
 

@@ -13,8 +13,13 @@ variable "public_subnets" {
   type        = "list"
 }
 
-variable "private_subnets" {
-  description = "Private Subnet IP 리스트"
+variable "private_web_subnets" {
+  description = "Private Web Subnet IP 리스트"
+  type        = "list"
+}
+
+variable "private_was_subnets" {
+  description = "Private Was Subnet IP 리스트"
   type        = "list"
 }
 

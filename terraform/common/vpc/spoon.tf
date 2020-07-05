@@ -11,9 +11,11 @@ module "vpc" {
   # VPC가 사용할 AZ를 정의한다.
   azs              = ["ap-northeast-2a", "ap-northeast-2c"]
   # VPC의 Public Subnet CIDR block을 정의한다.
-  public_subnets   = ["172.17.1.0/24"]
-  # VPC의 Private Subnet CIDR block을 정의한다.
-  private_subnets  = ["172.17.101.0/24", "172.17.102.0/24"]
+  public_subnets   = ["172.17.1.0/24", "172.17.2.0/24"]
+  # VPC의 Private Web Subnet CIDR block을 정의한다.
+  private_web_subnets  = ["172.17.101.0/24", "172.17.102.0/24"]
+  # VPC의 Private Was Subnet CIDR block을 정의한다.
+  private_was_subnets  = ["172.17.111.0/24", "172.17.112.0/24"]
   # VPC의 Private DB Subnet CIDR block을 정의한다. (RDS를 사용하지 않으면 이 라인은 필요없다.)
   database_subnets = ["172.17.201.0/24"]
 
